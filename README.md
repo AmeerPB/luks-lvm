@@ -1,1 +1,4 @@
-Full disk encryption with LUKS && LVM
+# Disk encryption
+
+Full disk encryption with LUKS & LVM. 
+
