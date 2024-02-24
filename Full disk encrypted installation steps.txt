@@ -1,0 +1,66 @@
+#Gparted steps
+
+Partition tabel -> gpt
+
+EFI -> FAT32 -> 500mb -> make it bootable
+
+/boot -> ext4 -> 1GB
+
+
+rest of the drive -> unformatted
+
+
+
+
+# cryptsetup steps
+
+crytpsetup luksFormat /dev/sda3 -> unformatted partition
+
+crytpsetup luksOpen /dev/sda3 box
+
+vgcreate vg-debian /dev/mapper/box
+
+lvcreate -n root -L 20G vg-debian
+
+lvcreate -n swap -L 4G vg-debian
+
+lvcreate -n home -l 100%FREE vg-debian
+
+
+
+#Post installation steps
+
+blkid /dev/sda3
+
+copy the blkid
+
+mount /dev/mapper/vg-debian-root /mnt
+mount /dev/mapper/vg-debian-home /mnt/home
+mount /dev/sda2 /mnt/boot
+mount --bind /dev /mnt/dev
+chroot /mnt
+mount -t proc proc /proc
+mount -t sysfs sys /sys
+mount -t devpts devpts /dev/pts
+nano /etc/crypttab
+		box UUUID=<blkid> none luks
+
+update-initramfs -k all -c
+
+exit
+reboot
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
